@@ -50,7 +50,11 @@
     <div class="melodyPlaylists">
       <h1>Melodius-Playlists</h1>
       <div class="cardContainer">
-
+        <div class="card" *ngFor="let album of albums">
+          <img [src]="album.cover_url" alt="Album Cover" />
+          <h2>{{ album.title }}</h2>
+          <p>{{ album.description }}</p>
+        </div>
       </div>
 
       <div class="playbar">
