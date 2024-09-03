@@ -18,4 +18,12 @@ export class SupabaseService {
   async getAlbums() {
     return await this.supabase.from('albums').select('*');
   }
+
+  async getSongs(albumId: string) {
+    console.log('Fetching songs for albumId:', albumId);
+    return await this.supabase
+      .from('songs')
+      .select('*')
+      .eq('album_id', albumId);
+  }
 }

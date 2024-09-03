@@ -11,6 +11,7 @@ import { SupabaseService } from '../services/supabase.service';
 })
 export class PlayerComponent implements OnInit {
   albums: any;
+  songs: any = [];
 
   constructor(private supabaseService: SupabaseService) {}
 
@@ -23,5 +24,21 @@ export class PlayerComponent implements OnInit {
       console.log('albums', res);
       this.albums = res.data;
     });
+  }
+
+  onAlbumClick(albumId: string) {
+    this.supabaseService.getSongs(albumId).then((res) => {
+      console.log('songs', res);
+      this.songs = (res.data ?? []).map((song: any) => {
+        const title = this.extractTitleFromUrl(song.mp3_url);
+        return { ...song, title };
+      });
+    });
+  }
+
+  extractTitleFromUrl(url: string): string {
+    const parts = url.split('/');
+    const filename = parts[parts.length - 1];
+    return filename.replace('.mp3', '').replace(/-/g, ' ').toUpperCase();
   }
 }
