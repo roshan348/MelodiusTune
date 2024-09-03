@@ -14,9 +14,14 @@ export class PlayerComponent implements OnInit {
 
   constructor(private supabaseService: SupabaseService) {}
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit() {
+    this.getAlbums();
+  }
+
+  getAlbums() {
     this.supabaseService.getAlbums().then((res) => {
-      this.albums = res.data?.length;
+      console.log('albums', res);
+      this.albums = res.data;
     });
   }
 }
