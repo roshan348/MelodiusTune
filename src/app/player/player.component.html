@@ -22,7 +22,7 @@
 
       <div class="songList">
         <ul>
-          <li *ngFor="let song of songs">
+          <li *ngFor="let song of songs" (click)="playSong(song)">
             <img class="invert" src="../../assets/music.svg" alt="">
             <div class="info">
               <div>{{ song.title }}</div>
@@ -70,22 +70,25 @@
 
       <div class="playbar">
         <div class="seekbar">
-          <div class="circle"></div>
+          <div class="circle" [style.left.%]="(currentTime / audio.duration) * 100"></div>
         </div>
         <div class="abovebar">
-          <div class="songinfo"></div>
+          <div class="songinfo">
+            <div>{{ currentSongTitle }}</div>
+          </div>
           <div class="songbuttons">
-            <img width="30" id="previous" src="../../assets/skip_previous.svg" alt="" />
-            <img width="30" id="play" src="../../assets/play_circle.svg" alt="" />
-            <img width="30" id="next" src="../../assets/skip_next.svg" alt="" />
+            <!-- Previous and Next Buttons -->
+            <img width="30" id="previous" (click)="playPrevious()" src="../../assets/skip_previous.svg" alt="Previous" />
+            <img width="30" id="play" (click)="togglePlayPause()" [src]="isPlaying ? '../../assets/pause.svg' : '../../assets/play_circle.svg'" alt="Play/Pause" />
+            <img width="30" id="next" (click)="playNext()" src="../../assets/skip_next.svg" alt="Next" />
           </div>
 
           <div class="timevol">
-            <div class="songtime"></div>
+            <div class="songtime">{{ formatTime(currentTime) }}</div>
             <div class="volume">
               <img src="../../assets/volume.svg" alt="" />
               <div class="range">
-                <input type="range" name="volume" />
+                <input type="range" name="volume" min="0" max="100" [(ngModel)]="volume" (input)="setVolume($event)" />
               </div>
             </div>
           </div>
