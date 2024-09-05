@@ -19,7 +19,7 @@ export class SupabaseService {
     return await this.supabase.from('albums').select('*');
   }
 
-  async getSongs(albumId: string) {
+  async getSongs(albumId: number) {
     console.log('Fetching songs for albumId:', albumId);
     return await this.supabase
       .from('songs')
