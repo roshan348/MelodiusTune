@@ -9,8 +9,16 @@
         <div class="mx-2 fs-2">Melodius</div>
       </div>
       <ul>
-        <li><img class="invert" src="../../assets/home.svg" alt="home" />Home</li>
-        <li><img class="invert" src="../../assets/search.svg" alt="search" />Search</li>
+        <li>
+          <img class="invert" src="../../assets/home.svg" alt="home" />Home
+        </li>
+        <li>
+          <img
+            class="invert"
+            src="../../assets/search.svg"
+            alt="search"
+          />Search
+        </li>
       </ul>
     </div>
 
@@ -23,26 +31,50 @@
       <div class="songList">
         <ul>
           <li *ngFor="let song of songs" (click)="playSong(song)">
-            <img class="invert" src="../../assets/music.svg" alt="">
+            <img class="invert" src="../../assets/music.svg" alt="" />
             <div class="info">
-              <div>{{ extractTitleFromUrl(song.mp3_url) }}</div>
-              <div>{{ song.artist || 'Unknown Artist' }}</div>
+              <div>
+                {{ songs }}
+              </div>
+              <div>{{ song.artist || "Unknown Artist" }}</div>
             </div>
             <div class="playnow">
               <span>Play Now</span>
-              <img src="../../assets/play_circle.svg" alt="">
+              <img src="../../assets/play_circle.svg" alt="" />
             </div>
           </li>
         </ul>
       </div>
 
       <div class="footer">
-        <div><a href="https://www.spotify.com/in-en/legal/"><span>Legal</span></a></div>
-        <div><a href="https://www.spotify.com/in-en/safetyandprivacy/"><span>Privacy Center</span></a></div>
-        <div><a href="https://www.spotify.com/in-en/legal/privacy-policy/"><span>Privacy Policy</span></a></div>
-        <div><a href="https://www.spotify.com/in-en/legal/cookies-policy/"><span>Cookies</span></a></div>
-        <div><a href="https://www.spotify.com/in-en/legal/privacy-policy/#s3"><span>About Ads</span></a></div>
-        <div><a href="https://www.spotify.com/in-en/accessibility/"><span>Accessibility</span></a></div>
+        <div>
+          <a href="https://www.spotify.com/in-en/legal/"><span>Legal</span></a>
+        </div>
+        <div>
+          <a href="https://www.spotify.com/in-en/safetyandprivacy/"
+            ><span>Privacy Center</span></a
+          >
+        </div>
+        <div>
+          <a href="https://www.spotify.com/in-en/legal/privacy-policy/"
+            ><span>Privacy Policy</span></a
+          >
+        </div>
+        <div>
+          <a href="https://www.spotify.com/in-en/legal/cookies-policy/"
+            ><span>Cookies</span></a
+          >
+        </div>
+        <div>
+          <a href="https://www.spotify.com/in-en/legal/privacy-policy/#s3"
+            ><span>About Ads</span></a
+          >
+        </div>
+        <div>
+          <a href="https://www.spotify.com/in-en/accessibility/"
+            ><span>Accessibility</span></a
+          >
+        </div>
       </div>
     </div>
   </div>
@@ -50,7 +82,12 @@
   <div class="right">
     <div class="header">
       <div class="nav">
-        <img width="40" class="invert hamburger" src="../../assets/hamburger.svg" alt="" />
+        <img
+          width="40"
+          class="invert hamburger"
+          src="../../assets/hamburger.svg"
+          alt=""
+        />
       </div>
       <div class="buttons">
         <button class="signupbtn">Sign up</button>
@@ -61,7 +98,11 @@
     <div class="melodyPlaylists">
       <h1>Melodius-Playlists</h1>
       <div class="cardContainer">
-        <div class="card" *ngFor="let album of albums" (click)="onAlbumClick(album.id)">
+        <div
+          class="card"
+          *ngFor="let album of albums"
+          (click)="onAlbumClick(album.id)"
+        >
           <img [src]="album.cover_url" alt="Album Cover" />
           <h2 class="fs-4">{{ album.title }}</h2>
           <p>{{ album.description }}</p>
@@ -76,25 +117,45 @@
           <input type="range" (input)="seek($event)" min="0" max="100" value="0" />
         </div> -->
 
-
         <div class="abovebar">
           <div class="songinfo">
-            <span>{{ extractTitleFromUrl(currentSong?.mp3_url) || 'No Song Playing' }}</span>
+            <span>{{ currentSong?.mp3_url || "No Song Playing" }}</span>
           </div>
           <div class="songbuttons">
             <!-- Previous and Next Buttons -->
-            <img src="../../assets/skip_previous.svg" (click)="previousSong()" alt="Previous">
-            <img src="../../assets/play_circle.svg" (click)="playSong(currentSong)" alt="Play">
-            <img src="../../assets/skip_next.svg" (click)="nextSong()" alt="Next">
+            <img
+              src="../../assets/skip_previous.svg"
+              (click)="previousSong()"
+              alt="Previous"
+            />
+            <img
+              src="../../assets/play_circle.svg"
+              (click)="playSong(currentSong)"
+              alt="Play"
+            />
+            <img
+              src="../../assets/skip_next.svg"
+              (click)="nextSong()"
+              alt="Next"
+            />
           </div>
 
           <div class="timevol">
-            <div class="songtime">
-              {{ currentTime }} / {{ duration }}
-            </div>
+            <div class="songtime">{{ currentTime }} / {{ duration }}</div>
             <div class="volume">
-              <img src="../../assets/volume.svg" (click)="toggleMute()" alt="Mute">
-              <input type="range" name="volume" min="0" max="100" [value]="volume" (input)="setVolume($event)" />
+              <img
+                src="../../assets/volume.svg"
+                (click)="toggleMute()"
+                alt="Mute"
+              />
+              <input
+                type="range"
+                name="volume"
+                min="0"
+                max="100"
+                [value]="volume"
+                (input)="setVolume($event)"
+              />
             </div>
           </div>
         </div>
@@ -102,6 +163,3 @@
     </div>
   </div>
 </div>
-
-
-

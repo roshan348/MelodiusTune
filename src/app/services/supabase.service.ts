@@ -19,11 +19,8 @@ export class SupabaseService {
     return await this.supabase.from('albums').select('*');
   }
 
-  async getSongs(albumId: number) {
-    console.log('Fetching songs for albumId:', albumId);
-    return await this.supabase
-      .from('songs')
-      .select('*')
-      .eq('album_id', albumId);
+  async getSongs(id: number) {
+    console.log('Fetching songs for albumId:', id);
+    return await this.supabase.from('songs').select('*').eq('id', id);
   }
 }

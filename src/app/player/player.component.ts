@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class PlayerComponent implements OnInit {
   albums: any[] = [];
-  songs: any[] = [];
+  songs: any;
   currentSong: any = null;
   audio: HTMLAudioElement | null = null;
   volume: number = 100;
@@ -34,11 +34,13 @@ export class PlayerComponent implements OnInit {
     }
   }
 
-  async onAlbumClick(albumId: number) {
-    const { data } = await this.supabaseService.getSongs(albumId);
+  async onAlbumClick(id: number) {
+    console.log('Id clicked', id);
+    const { data } = await this.supabaseService.getSongs(id);
     if (data && data.length > 0) {
-      this.songs = data;
-      this.playSong(this.songs[0]); // Automatically play the first song of the album
+      this.songs = data[0].mp3_url;
+      console.log('songs', this.songs);
+      this.playSong(this.songs[0]);
     }
   }
 
@@ -48,7 +50,7 @@ export class PlayerComponent implements OnInit {
     }
 
     this.currentSong = song;
-    const mp3Url = this.extractTitleFromUrl(song.mp3_url);
+    // const mp3Url = this.extractTitleFromUrl(song.mp3_url);
 
     this.audio = new Audio(song.mp3_url);
     this.audio.volume = this.volume / 100;
@@ -60,13 +62,13 @@ export class PlayerComponent implements OnInit {
     };
   }
 
-  extractTitleFromUrl(mp3Url: string): string {
-    if (!mp3Url) return 'Unknown Title';
-    const urlParts = mp3Url.split('/');
-    const fileWithQuery = urlParts[urlParts.length - 1];
-    const fileName = fileWithQuery.split('?')[0];
-    return decodeURIComponent(fileName.replace('.mp3', ''));
-  }
+  // extractTitleFromUrl(mp3Url: string): string {
+  //   if (!mp3Url) return 'Unknown Title';
+  //   const urlParts = mp3Url.split('/');
+  //   const fileWithQuery = urlParts[urlParts.length - 1];
+  //   const fileName = fileWithQuery.split('?')[0];
+  //   return decodeURIComponent(fileName.replace('.mp3', ''));
+  // }
 
   setVolume(event: any) {
     this.volume = +event.target.value;
@@ -90,13 +92,17 @@ export class PlayerComponent implements OnInit {
   }
 
   nextSong() {
-    const currentIndex = this.songs.findIndex((s) => s === this.currentSong);
+    const currentIndex = this.songs.findIndex(
+      (s: any) => s === this.currentSong
+    );
     const nextIndex = (currentIndex + 1) % this.songs.length;
     this.playSong(this.songs[nextIndex]);
   }
 
   previousSong() {
-    const currentIndex = this.songs.findIndex((s) => s === this.currentSong);
+    const currentIndex = this.songs.findIndex(
+      (s: any) => s === this.currentSong
+    );
     const prevIndex =
       (currentIndex - 1 + this.songs.length) % this.songs.length;
     this.playSong(this.songs[prevIndex]);
