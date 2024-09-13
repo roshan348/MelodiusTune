@@ -12,15 +12,28 @@ import { FormsModule } from '@angular/forms';
 })
 export class PlayerComponent implements OnInit {
   albums: any[] = [];
-  songs: any;
+  songs: any[] = [];
   currentSong: any = null;
-  audio: HTMLAudioElement | null = null;
+  audio: HTMLAudioElement;
   volume: number = 100;
   isMuted: boolean = false;
   currentTime: string = '00:00';
   duration: string = '00:00';
+  currentIndex: number = 0;
+  i!: number;
 
-  constructor(private supabaseService: SupabaseService) {}
+  constructor(private supabaseService: SupabaseService) {
+    this.audio = new Audio();
+
+    // Update the current time and duration
+    this.audio.ontimeupdate = () => {
+      this.updateTime();
+    };
+
+    this.audio.onloadedmetadata = () => {
+      this.duration = this.formatTime(this.audio.duration);
+    };
+  }
 
   ngOnInit() {
     this.getAlbums();
@@ -35,87 +48,119 @@ export class PlayerComponent implements OnInit {
   }
 
   async onAlbumClick(id: number) {
-    console.log('Id clicked', id);
     const { data } = await this.supabaseService.getSongs(id);
     if (data && data.length > 0) {
-      this.songs = data[0].mp3_url;
-      console.log('songs', this.songs);
-      this.playSong(this.songs[0]);
+      this.songs = [];
+      data.forEach((song: any) => {
+        const mp3Urls = song.mp3_url;
+        mp3Urls.forEach((url: string) => {
+          this.songs.push({
+            url: url,
+            title: this.extractTitleFromUrl(url),
+            artist: song.artist || 'Unknown Artist',
+          });
+        });
+      });
+
+      // Play the first song by default
+      if (this.songs.length > 0) {
+        this.playSong(this.songs[0], 0);
+      }
     }
   }
 
-  playSong(song: any) {
+  extractTitleFromUrl(url: string): string {
+    try {
+      // Extract the filename from the URL
+      const segments = url.split('/');
+      let filename = segments[segments.length - 1];
+
+      // Remove any query strings or URL fragments (like ?id=123 or #section)
+      filename = filename.split('?')[0].split('#')[0];
+
+      // Replace underscores or dashes with spaces for readability
+      let title = filename.replace(/[_-]/g, ' ');
+
+      // Decode URL-encoded characters (e.g., %20 -> space)
+      title = decodeURIComponent(title);
+
+      // Capitalize the first letter of each word for better appearance
+      title = title
+        .toLowerCase()
+        .replace(/\b\w/g, (char: string) => char.toUpperCase());
+
+      // Return the title with the .mp3 extension
+      return title;
+    } catch (error) {
+      console.error('Error extracting title from URL:', error);
+      return 'Unknown Title'; // Return a default title in case of an error
+    }
+  }
+
+  playSong(song: any, index: number) {
     if (this.audio) {
       this.audio.pause();
     }
 
     this.currentSong = song;
-    // const mp3Url = this.extractTitleFromUrl(song.mp3_url);
+    this.currentIndex = index;
 
-    this.audio = new Audio(song.mp3_url);
+    this.audio = new Audio(song.url);
     this.audio.volume = this.volume / 100;
     this.audio.play();
 
     this.audio.ontimeupdate = () => {
-      this.currentTime = this.formatTime(this.audio!.currentTime);
-      this.duration = this.formatTime(this.audio!.duration);
+      this.currentTime = this.formatTime(this.audio.currentTime);
+      this.duration = this.formatTime(this.audio.duration);
     };
   }
 
-  // extractTitleFromUrl(mp3Url: string): string {
-  //   if (!mp3Url) return 'Unknown Title';
-  //   const urlParts = mp3Url.split('/');
-  //   const fileWithQuery = urlParts[urlParts.length - 1];
-  //   const fileName = fileWithQuery.split('?')[0];
-  //   return decodeURIComponent(fileName.replace('.mp3', ''));
-  // }
-
   setVolume(event: any) {
-    this.volume = +event.target.value;
-    if (this.audio) {
-      this.audio.volume = this.volume / 50;
-    }
+    this.volume = event.target.value;
+    this.audio.volume = this.volume / 100;
   }
 
   toggleMute() {
-    if (this.audio) {
-      this.isMuted = !this.isMuted;
-      this.audio.muted = this.isMuted;
-      this.volume = this.isMuted ? 0 : 20; // Toggle between mute and full volume
-    }
+    this.isMuted = !this.isMuted;
+    this.audio.muted = this.isMuted;
   }
 
-  formatTime(seconds: number): string {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  formatTime(time: number): string {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes < 10 ? '0' + minutes : minutes}:${
+      seconds < 10 ? '0' + seconds : seconds
+    }`;
   }
 
   nextSong() {
-    const currentIndex = this.songs.findIndex(
-      (s: any) => s === this.currentSong
-    );
-    const nextIndex = (currentIndex + 1) % this.songs.length;
-    this.playSong(this.songs[nextIndex]);
+    if (this.currentIndex < this.songs.length - 1) {
+      this.playSong(this.songs[this.currentIndex + 1], this.currentIndex + 1);
+    }
   }
 
   previousSong() {
-    const currentIndex = this.songs.findIndex(
-      (s: any) => s === this.currentSong
-    );
-    const prevIndex =
-      (currentIndex - 1 + this.songs.length) % this.songs.length;
-    this.playSong(this.songs[prevIndex]);
+    if (this.currentIndex > 0) {
+      this.playSong(this.songs[this.currentIndex - 1], this.currentIndex - 1);
+    }
   }
 
-  seek(event: MouseEvent) {
-    const seekbar = event.currentTarget as HTMLElement;
-    const rect = seekbar.getBoundingClientRect();
-    const offsetX = event.clientX - rect.left;
-    const percentage = offsetX / rect.width;
-
-    if (this.audio && this.audio.duration) {
-      this.audio.currentTime = percentage * this.audio.duration;
+  togglePlayPause() {
+    if (this.audio.paused) {
+      this.audio.play();
+    } else {
+      this.audio.pause();
     }
+  }
+
+  seek(event: any) {
+    const seekbar = event.target;
+    const rect = seekbar.getBoundingClientRect();
+    const seekPosition = (event.clientX - rect.left) / rect.width;
+    this.audio.currentTime = seekPosition * this.audio.duration;
+  }
+
+  updateTime() {
+    this.currentTime = this.formatTime(this.audio.currentTime);
   }
 }

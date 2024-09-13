@@ -30,13 +30,13 @@
 
       <div class="songList">
         <ul>
-          <li *ngFor="let song of songs" (click)="playSong(song)">
+          <li *ngFor="let song of songs" (click)="playSong(song, i)">
             <img class="invert" src="../../assets/music.svg" alt="" />
             <div class="info">
               <div>
-                {{ songs }}
+                {{ song.title }}
               </div>
-              <div>{{ song.artist || "Unknown Artist" }}</div>
+              <div>{{ song.artist }}</div>
             </div>
             <div class="playnow">
               <span>Play Now</span>
@@ -111,55 +111,32 @@
 
       <div class="playbar">
         <div class="seekbar" (click)="seek($event)">
-          <div class="circle"></div>
+          <div class="circle" [style.left]="(audio.currentTime / audio.duration) * 100 + '%'"></div>
         </div>
-        <!-- <div class="seekbar">
-          <input type="range" (input)="seek($event)" min="0" max="100" value="0" />
-        </div> -->
 
         <div class="abovebar">
           <div class="songinfo">
-            <span>{{ currentSong?.mp3_url || "No Song Playing" }}</span>
+            <span>{{ currentSong?.title || "No Song Playing" }}</span>
           </div>
+
           <div class="songbuttons">
-            <!-- Previous and Next Buttons -->
-            <img
-              src="../../assets/skip_previous.svg"
-              (click)="previousSong()"
-              alt="Previous"
-            />
-            <img
-              src="../../assets/play_circle.svg"
-              (click)="playSong(currentSong)"
-              alt="Play"
-            />
-            <img
-              src="../../assets/skip_next.svg"
-              (click)="nextSong()"
-              alt="Next"
-            />
+            <img src="../../assets/skip_previous.svg" (click)="previousSong()" alt="Previous" />
+            <img *ngIf="audio.paused" src="../../assets/play_circle.svg" (click)="togglePlayPause()" alt="Play" />
+            <img *ngIf="!audio.paused" src="../../assets/pause.svg" (click)="togglePlayPause()" alt="Pause" />
+            <img src="../../assets/skip_next.svg" (click)="nextSong()" alt="Next" />
           </div>
 
           <div class="timevol">
             <div class="songtime">{{ currentTime }} / {{ duration }}</div>
+
             <div class="volume">
-              <img
-                src="../../assets/volume.svg"
-                (click)="toggleMute()"
-                alt="Mute"
-              />
-              <input
-                type="range"
-                name="volume"
-                min="0"
-                max="100"
-                [value]="volume"
-                (input)="setVolume($event)"
-              />
+              <img src="../../assets/volume.svg" (click)="toggleMute()" alt="Mute" />
+              <input type="range" name="volume" min="0" max="100" [value]="volume" (input)="setVolume($event)" />
             </div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </div>
