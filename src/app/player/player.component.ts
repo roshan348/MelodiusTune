@@ -21,6 +21,8 @@ export class PlayerComponent implements OnInit {
   duration: string = '00:00';
   currentIndex: number = 0;
   i!: number;
+  previousVolume: number = 1;
+  isMenuOpen: boolean = false;
 
   constructor(private supabaseService: SupabaseService) {
     this.audio = new Audio();
@@ -38,6 +40,17 @@ export class PlayerComponent implements OnInit {
   ngOnInit() {
     this.getAlbums();
     this.onAlbumClick(1); // Load default album (album_id 1) on page load
+    this.volume = 100;
+    this.isMuted = false;
+  }
+
+  openMenu() {
+    this.isMenuOpen = true;
+  }
+
+  // Close the menu
+  closeMenu() {
+    this.isMenuOpen = false;
   }
 
   async getAlbums() {
@@ -107,42 +120,66 @@ export class PlayerComponent implements OnInit {
 
     this.audio = new Audio(song.url);
     this.audio.volume = this.volume / 100;
-    this.audio.play();
+
+    this.audio.onloadedmetadata = () => {
+      this.duration = this.formatTime(this.audio.duration);
+      this.audio.play();
+    };
 
     this.audio.ontimeupdate = () => {
       this.currentTime = this.formatTime(this.audio.currentTime);
-      this.duration = this.formatTime(this.audio.duration);
     };
   }
 
   setVolume(event: any) {
-    this.volume = event.target.value;
-    this.audio.volume = this.volume / 100;
+    this.volume = event.target.value; // Set volume based on range input
+    if (!this.isMuted) {
+      this.currentSong.volume = this.volume / 100; // Update song volume if not muted
+    }
   }
 
-  toggleMute() {
-    this.isMuted = !this.isMuted;
-    this.audio.muted = this.isMuted;
+  toggleMute(volumeIcon: HTMLImageElement) {
+    if (this.isMuted) {
+      this.isMuted = false;
+      volumeIcon.src = volumeIcon.src.replace('volume.svg', 'mute.svg');
+      this.currentSong.volume = this.volume / 100;
+    } else {
+      this.isMuted = true;
+      volumeIcon.src = volumeIcon.src.replace('mute.svg', 'volume.svg');
+      this.currentSong.volume = 0;
+    }
   }
 
-  formatTime(time: number): string {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes < 10 ? '0' + minutes : minutes}:${
-      seconds < 10 ? '0' + seconds : seconds
-    }`;
+  formatTime(seconds: number): string {
+    if (isNaN(seconds)) {
+      return '00:00'; // Return default value if time is NaN
+    }
+
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes < 10 ? '0' : ''}${minutes}:${
+      remainingSeconds < 10 ? '0' : ''
+    }${remainingSeconds}`;
   }
 
   nextSong() {
+    // Check if the current index is not the last song in the array
     if (this.currentIndex < this.songs.length - 1) {
-      this.playSong(this.songs[this.currentIndex + 1], this.currentIndex + 1);
+      this.currentIndex++;
+    } else {
+      this.currentIndex = 0; // Go back to the first song if it's the last one
     }
+    this.playSong(this.songs[this.currentIndex], this.currentIndex);
   }
 
   previousSong() {
+    // Check if the current index is not the first song in the array
     if (this.currentIndex > 0) {
-      this.playSong(this.songs[this.currentIndex - 1], this.currentIndex - 1);
+      this.currentIndex--;
+    } else {
+      this.currentIndex = this.songs.length - 1; // Go to the last song if it's the first one
     }
+    this.playSong(this.songs[this.currentIndex], this.currentIndex);
   }
 
   togglePlayPause() {

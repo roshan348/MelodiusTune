@@ -8,10 +8,6 @@
   padding: 0;
   font-family: "Roboto", sans-serif;
 }
-// .body {
-//   background-color: black;
-//   color: white;
-// }
 .bg-black{
   background-color: black;
   color: white;
@@ -174,6 +170,7 @@
   bottom: 20px;
   padding: 12px;
   width: 70vw;
+  height: 9vh;
   filter: invert(1);
   background-color: #dad5d5;
   border-radius: 20px;
@@ -240,15 +237,15 @@
 
 
 .seekbar{
-    height: 4px;
-    width: 99%;
-    background: black;
-    border-radius: 10px;
-    position: absolute;
-    bottom: 3px;
-    left: 0;
-    margin: 6px;
-    cursor: pointer;
+  height: 4px;
+  width: 99%;
+  background: black;
+  border-radius: 10px;
+  position: absolute;
+  bottom: 3px;
+  left: 0;
+  margin: 6px;
+  cursor: pointer;
 }
 
 .circle{
@@ -280,7 +277,7 @@
 
 .songinfo{
   color: black;
-  padding: 0 12px;
+  padding: 10 12px;
   width: 250px;
 }
 
@@ -311,30 +308,33 @@
 
 @media (max-width: 1300px){
   .left{
-      position: absolute;
-      left: -120%;
-      transition: all .3s;
-      z-index: 1;
-      width: 370px;
-      background-color: black;
-      padding: 0;
-      height: 100vh;
-      position: fixed;
-      top: 0;
-  }
+    position: absolute;
+    left: -120%;
+    transition: left 0.3s ease-in-out;
+    z-index: 1;
+    width: 370px;
+    background-color: black;
+    padding: 0;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+}
 
   .right{
       width: 100vw;
   }
+
   .playbar{
-      width: calc(100vw - 45px);
+      // width: calc(100vw - 45px);
+      width: 93%;
+      height: 30vh;
       left: 1.3%;
       display: flex;
       justify-content: center;
       align-items: center;
   }
   .seekbar{
-      width: calc(100vw - 40px)
+      width: calc(100vw - 40px);
   }
 
   .hamburger{
@@ -380,6 +380,7 @@
   }
   .songinfo{
     width: auto;
+    font-size: 15px;
   }
   .timevol{
     display: flex;
@@ -396,7 +397,7 @@
 }
 
 
-@media (max-width: 685px){
+@media (max-width: 485px){
 .card{
   width: 100%;
 }
@@ -427,7 +428,6 @@ height: 85vh;
 }
 
 .left{
-width: 100vw;
+  width: 100vw;
 }
-
 }
