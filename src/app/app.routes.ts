@@ -3,7 +3,7 @@ import { PlayerComponent } from './player/player.component';
 
 export const routes: Routes = [
   {
-    path: 'player',
+    path: '',
     component: PlayerComponent,
   },
 ];
