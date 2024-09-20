@@ -1,6 +1,6 @@
 <div class="d-flex bg-black">
-  <div class="left" [class.open]="isMenuOpen">
-    <div class="close" (click)="closeMenu()">
+  <div class="left" *ngIf="isMenuOpen">
+    <div class="close" (click)="openMenu()">
       <img width="30" class="invert" src="../../assets/close.svg" alt="" />
     </div>
     <div class="home bg-grey rounded m-1 p-1">
@@ -81,13 +81,12 @@
 
   <div class="right">
     <div class="header">
-      <div class="nav">
+      <div class="nav" (click)="openMenu()">
         <img
           width="40"
           class="invert hamburger"
           src="../../assets/hamburger.svg"
           alt=""
-          (click)="openMenu()"
         />
       </div>
       <div class="buttons">
@@ -112,7 +111,10 @@
 
       <div class="playbar">
         <div class="seekbar" (click)="seek($event)">
-          <div class="circle" [style.left]="(audio.currentTime / audio.duration) * 100 + '%'"></div>
+          <div
+            class="circle"
+            [style.left]="(audio.currentTime / audio.duration) * 100 + '%'"
+          ></div>
         </div>
 
         <div class="abovebar">
@@ -121,23 +123,55 @@
           </div>
 
           <div class="songbuttons">
-            <img width="30" src="../../assets/skip_previous.svg" (click)="previousSong()" alt="Previous" />
-            <img width="30" *ngIf="audio.paused" src="../../assets/play_circle.svg" (click)="togglePlayPause()" alt="Play" />
-            <img width="30" *ngIf="!audio.paused" src="../../assets/pause.svg" (click)="togglePlayPause()" alt="Pause" />
-            <img width="30" src="../../assets/skip_next.svg" (click)="nextSong()" alt="Next" />
+            <img
+              width="30"
+              src="../../assets/skip_previous.svg"
+              (click)="previousSong()"
+              alt="Previous"
+            />
+            <img
+              width="30"
+              *ngIf="audio.paused"
+              src="../../assets/play_circle.svg"
+              (click)="togglePlayPause()"
+              alt="Play"
+            />
+            <img
+              width="30"
+              *ngIf="!audio.paused"
+              src="../../assets/pause.svg"
+              (click)="togglePlayPause()"
+              alt="Pause"
+            />
+            <img
+              width="30"
+              src="../../assets/skip_next.svg"
+              (click)="nextSong()"
+              alt="Next"
+            />
           </div>
 
           <div class="timevol">
             <div class="songtime">{{ currentTime }} / {{ duration }}</div>
 
             <div class="volume">
-              <img #volumeIcon src="../../assets/volume.svg" (click)="toggleMute(volumeIcon)"/>
-              <input type="range" name="volume" min="0" max="100" [value]="volume" (input)="setVolume($event)" />
+              <img
+                #volumeIcon
+                src="../../assets/volume.svg"
+                (click)="toggleMute(volumeIcon)"
+              />
+              <input
+                type="range"
+                name="volume"
+                min="0"
+                max="100"
+                [value]="volume"
+                (input)="setVolume($event)"
+              />
             </div>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>

@@ -45,13 +45,14 @@ export class PlayerComponent implements OnInit {
   }
 
   openMenu() {
-    this.isMenuOpen = true;
+    this.isMenuOpen = !this.isMenuOpen;
+    console.log('Clicked');
   }
 
   // Close the menu
-  closeMenu() {
-    this.isMenuOpen = false;
-  }
+  // closeMenu() {
+  //   this.isMenuOpen = false;
+  // }
 
   async getAlbums() {
     const { data } = await this.supabaseService.getAlbums();
