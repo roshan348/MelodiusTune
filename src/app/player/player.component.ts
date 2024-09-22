@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SupabaseService } from '../services/supabase.service';
 import { FormsModule } from '@angular/forms';
@@ -21,7 +21,7 @@ export class PlayerComponent implements OnInit {
   duration: string = '00:00';
   currentIndex: number = 0;
   i!: number;
-  previousVolume: number = 1;
+  previousVolume: number = 100;
   isMenuOpen: boolean = false;
 
   constructor(private supabaseService: SupabaseService) {
@@ -42,17 +42,31 @@ export class PlayerComponent implements OnInit {
     this.onAlbumClick(1); // Load default album (album_id 1) on page load
     this.volume = 100;
     this.isMuted = false;
+    this.checkScreenSize();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkScreenSize();
+  }
+
+  checkScreenSize() {
+    if (window.innerWidth > 1286) {
+      this.isMenuOpen = true; // Menu should be open on larger screens
+    } else {
+      this.isMenuOpen = false; // Menu should be closed on smaller screens
+    }
   }
 
   openMenu() {
-    this.isMenuOpen = !this.isMenuOpen;
+    this.isMenuOpen = true;
     console.log('Clicked');
   }
 
   // Close the menu
-  // closeMenu() {
-  //   this.isMenuOpen = false;
-  // }
+  closeMenu() {
+    this.isMenuOpen = false;
+  }
 
   async getAlbums() {
     const { data } = await this.supabaseService.getAlbums();
@@ -78,9 +92,36 @@ export class PlayerComponent implements OnInit {
 
       // Play the first song by default
       if (this.songs.length > 0) {
-        this.playSong(this.songs[0], 0);
+        this.loadSong(this.songs[0], 0);
       }
     }
+  }
+
+  // loadSong(song: any, index: number) {
+  //   if (this.audio) {
+  //     this.audio.pause(); // Stop any current song
+  //   }
+  //   this.currentSong = song;
+  //   this.currentIndex = index;
+  //   this.audio.src = song.url;
+  //   this.audio.load(); // Just load the song without playing
+  // }
+
+  loadSong(song: any, index: number) {
+    if (this.audio) {
+      this.audio.pause(); // Stop any currently playing song
+    }
+
+    this.currentSong = song;
+    this.currentIndex = index;
+    this.audio.src = song.url;
+    this.audio.load(); // Load the song, but do not auto-play
+
+    // Update the playbar with song information
+    this.audio.onloadedmetadata = () => {
+      this.duration = this.formatTime(this.audio.duration);
+      this.updateTime();
+    };
   }
 
   extractTitleFromUrl(url: string): string {
@@ -113,41 +154,54 @@ export class PlayerComponent implements OnInit {
 
   playSong(song: any, index: number) {
     if (this.audio) {
-      this.audio.pause();
+      this.audio.pause(); // Stop any currently playing song
     }
 
     this.currentSong = song;
     this.currentIndex = index;
+    this.audio.src = song.url;
+    this.audio.volume = this.volume / 100; // Set volume based on current slider value
 
-    this.audio = new Audio(song.url);
-    this.audio.volume = this.volume / 100;
+    // Load the song and play it once loaded
+    this.audio.load();
+    this.audio.play();
 
+    // Update song duration and time
     this.audio.onloadedmetadata = () => {
       this.duration = this.formatTime(this.audio.duration);
-      this.audio.play();
-    };
-
-    this.audio.ontimeupdate = () => {
-      this.currentTime = this.formatTime(this.audio.currentTime);
+      this.updateTime();
     };
   }
 
   setVolume(event: any) {
     this.volume = event.target.value; // Set volume based on range input
     if (!this.isMuted) {
-      this.currentSong.volume = this.volume / 100; // Update song volume if not muted
+      this.audio.volume = this.volume / 100; // Update song volume if not muted
     }
   }
 
-  toggleMute(volumeIcon: HTMLImageElement) {
+  // toggleMute(volumeIcon: HTMLImageElement) {
+  //   if (this.isMuted) {
+  //     this.isMuted = false;
+  //     volumeIcon.src = volumeIcon.src.replace('volume.svg', 'mute.svg');
+  //     this.currentSong.volume = this.volume / 100;
+  //   } else {
+  //     this.isMuted = true;
+  //     volumeIcon.src = volumeIcon.src.replace('mute.svg', 'volume.svg');
+  //     this.currentSong.volume = 0;
+  //   }
+  // }
+
+  toggleMute() {
     if (this.isMuted) {
       this.isMuted = false;
-      volumeIcon.src = volumeIcon.src.replace('volume.svg', 'mute.svg');
-      this.currentSong.volume = this.volume / 100;
+      this.volume = this.previousVolume;
+      this.audio.volume = this.previousVolume / 100; // Restore the volume
     } else {
       this.isMuted = true;
-      volumeIcon.src = volumeIcon.src.replace('mute.svg', 'volume.svg');
-      this.currentSong.volume = 0;
+      this.previousVolume = this.volume; // Store current volume before muting
+      this.audio.volume = 0; // Set volume to 0 when muted
+      this.volume = 0;
     }
   }
 
@@ -170,6 +224,7 @@ export class PlayerComponent implements OnInit {
     } else {
       this.currentIndex = 0; // Go back to the first song if it's the last one
     }
+    this.loadSong(this.songs[this.currentIndex], this.currentIndex);
     this.playSong(this.songs[this.currentIndex], this.currentIndex);
   }
 
@@ -180,8 +235,17 @@ export class PlayerComponent implements OnInit {
     } else {
       this.currentIndex = this.songs.length - 1; // Go to the last song if it's the first one
     }
+    this.loadSong(this.songs[this.currentIndex], this.currentIndex);
     this.playSong(this.songs[this.currentIndex], this.currentIndex);
   }
+
+  // togglePlayPause() {
+  //   if (this.audio.paused) {
+  //     this.audio.play();
+  //   } else {
+  //     this.audio.pause();
+  //   }
+  // }
 
   togglePlayPause() {
     if (this.audio.paused) {

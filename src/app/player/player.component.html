@@ -1,14 +1,14 @@
 <div class="d-flex bg-black">
   <div class="left" *ngIf="isMenuOpen">
-    <div class="close" (click)="openMenu()">
+    <div class="close" (click)="closeMenu()">
       <img width="30" class="invert" src="../../assets/close.svg" alt="" />
     </div>
     <div class="home bg-grey rounded m-1 p-1">
       <div class="logo">
         <img width="50" class="" src="../../assets/melodius-icon.png" alt="" />
-        <div class="mx-2 fs-2">Melodius</div>
+        <div class="mx-2 fs-2 text-header">Melodius</div>
       </div>
-      <ul>
+      <!-- <ul>
         <li>
           <img class="invert" src="../../assets/home.svg" alt="home" />Home
         </li>
@@ -19,7 +19,7 @@
             alt="search"
           />Search
         </li>
-      </ul>
+      </ul> -->
     </div>
 
     <div class="library bg-grey rounded m-1 p-1">
@@ -46,7 +46,7 @@
         </ul>
       </div>
 
-      <div class="footer">
+      <!-- <div class="footer">
         <div>
           <a href="https://www.spotify.com/in-en/legal/"><span>Legal</span></a>
         </div>
@@ -75,7 +75,7 @@
             ><span>Accessibility</span></a
           >
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 
@@ -89,14 +89,14 @@
           alt=""
         />
       </div>
-      <div class="buttons">
+      <!-- <div class="buttons">
         <button class="signupbtn">Sign up</button>
         <button class="loginbtn">Log in</button>
-      </div>
+      </div> -->
+      <h1 class="text-header">Melodius-Playlists</h1>
     </div>
 
     <div class="melodyPlaylists">
-      <h1>Melodius-Playlists</h1>
       <div class="cardContainer">
         <div
           class="card"
@@ -153,12 +153,11 @@
 
           <div class="timevol">
             <div class="songtime">{{ currentTime }} / {{ duration }}</div>
-
             <div class="volume">
               <img
                 #volumeIcon
                 src="../../assets/volume.svg"
-                (click)="toggleMute(volumeIcon)"
+                (click)="toggleMute()"
               />
               <input
                 type="range"

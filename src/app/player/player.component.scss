@@ -72,7 +72,7 @@
 
 .header {
   display: flex;
-  justify-content: space-between;
+  // justify-content: space-between;
   background-color: rgb(34, 34, 34);
 }
 .header > * {
@@ -165,14 +165,16 @@
   font-size: 17px;
 }
 .playbar {
-  position: fixed;
-  bottom: 20px;
+  align-items: center;
   padding: 12px;
+  background-color: #dad5d5;
+  position: fixed;
+  border-radius: 20px;
+  bottom: 20px;
   width: 70vw;
   height: 9vh;
+  z-index: 1000;
   filter: invert(1);
-  background-color: #dad5d5;
-  border-radius: 20px;
 }
 .songbuttons {
   display: flex;
@@ -275,8 +277,11 @@
 
 .songinfo {
   color: black;
-  padding: 10 12px;
   width: 250px;
+  margin-right: 10px;
+  font-size: 16px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .volume {
@@ -307,30 +312,31 @@
   .left {
     position: fixed;
     left: 10px;
-    transition: left 0.3s ease-in-out;
-    z-index: 999;
-    width: 370px;
+    transition: left 0.4s ease-in-out;
+    z-index: 1;
+    // width: 370px;
     background-color: black;
     padding: 0;
-    height: 100vh;
+    // height: 100vh;
     top: 0;
   }
+
 
   .right {
     width: 100vw;
   }
 
   .playbar {
-    // width: calc(100vw - 45px);
     width: 93%;
-    height: 30vh;
+    height: fit-content;
     left: 1.3%;
     display: flex;
     justify-content: center;
     align-items: center;
   }
+
   .seekbar {
-    width: calc(100vw - 40px);
+    width: 98%;
   }
 
   .hamburger {
@@ -354,6 +360,11 @@
   .card {
     width: 44vw;
   }
+
+  .card:last-child{
+    margin-bottom: 50px;
+  }
+
   .cardContainer {
     margin: 0;
     justify-content: center;
@@ -368,7 +379,7 @@
 
   .abovebar {
     flex-direction: column;
-    gap: 23px;
+    gap: 10px;
     align-items: center;
   }
   .spotifyPlaylists h1 {
@@ -377,16 +388,24 @@
   .songinfo {
     width: auto;
     font-size: 15px;
+    margin-left: 10px;
   }
   .timevol {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
     flex-direction: column;
-    gap: 13px;
+    gap: 5px;
   }
   .songtime {
-    margin-left: 25px;
+    margin-left: 10px;
+    // padding-top: 10px;
+  }
+
+  .text-header {
+    // padding: 10px;
+    margin-left: 10px;
+    margin-top: 5px;
   }
 }
 
