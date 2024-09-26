@@ -67,7 +67,6 @@ export class PlayerComponent implements OnInit {
 
   openMenu() {
     this.isMenuOpen = true;
-    console.log('Clicked');
   }
 
   // Close the menu
@@ -162,6 +161,7 @@ export class PlayerComponent implements OnInit {
   playSong(song: any, index: number) {
     if (this.audio) {
       this.audio.pause(); // Stop any currently playing song
+      // this.closeMenu();
     }
 
     this.currentSong = song;
