@@ -23,6 +23,7 @@ export class PlayerComponent implements OnInit {
   i!: number;
   previousVolume: number = 100;
   isMenuOpen: boolean = false;
+  isMobileView = false;
 
   constructor(private supabaseService: SupabaseService) {
     this.audio = new Audio();
@@ -35,6 +36,8 @@ export class PlayerComponent implements OnInit {
     this.audio.onloadedmetadata = () => {
       this.duration = this.formatTime(this.audio.duration);
     };
+
+    this.checkViewport();
   }
 
   ngOnInit() {
@@ -47,7 +50,11 @@ export class PlayerComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
-    this.checkScreenSize();
+    this.checkViewport();
+  }
+
+  private checkViewport() {
+    this.isMobileView = window.innerWidth < 768;
   }
 
   checkScreenSize() {

@@ -1,25 +1,13 @@
 <div class="d-flex bg-black">
   <div class="left" *ngIf="isMenuOpen">
     <div class="close" (click)="closeMenu()">
-      <img width="30" class="invert" src="../../assets/close.svg" alt="" />
+      <img width="25" class="invert" src="../../assets/close.svg" alt="" />
     </div>
     <div class="home bg-grey rounded m-1 p-1">
       <div class="logo">
         <img width="50" class="" src="../../assets/melodius-icon.png" alt="" />
         <div class="mx-2 fs-2 text-header">Melodius</div>
       </div>
-      <!-- <ul>
-        <li>
-          <img class="invert" src="../../assets/home.svg" alt="home" />Home
-        </li>
-        <li>
-          <img
-            class="invert"
-            src="../../assets/search.svg"
-            alt="search"
-          />Search
-        </li>
-      </ul> -->
     </div>
 
     <div class="library bg-grey rounded m-1 p-1">
@@ -45,37 +33,6 @@
           </li>
         </ul>
       </div>
-
-      <!-- <div class="footer">
-        <div>
-          <a href="https://www.spotify.com/in-en/legal/"><span>Legal</span></a>
-        </div>
-        <div>
-          <a href="https://www.spotify.com/in-en/safetyandprivacy/"
-            ><span>Privacy Center</span></a
-          >
-        </div>
-        <div>
-          <a href="https://www.spotify.com/in-en/legal/privacy-policy/"
-            ><span>Privacy Policy</span></a
-          >
-        </div>
-        <div>
-          <a href="https://www.spotify.com/in-en/legal/cookies-policy/"
-            ><span>Cookies</span></a
-          >
-        </div>
-        <div>
-          <a href="https://www.spotify.com/in-en/legal/privacy-policy/#s3"
-            ><span>About Ads</span></a
-          >
-        </div>
-        <div>
-          <a href="https://www.spotify.com/in-en/accessibility/"
-            ><span>Accessibility</span></a
-          >
-        </div>
-      </div> -->
     </div>
   </div>
 
@@ -83,16 +40,12 @@
     <div class="header">
       <div class="nav" (click)="openMenu()">
         <img
-          width="40"
+          width="30"
           class="invert hamburger"
           src="../../assets/hamburger.svg"
           alt=""
         />
       </div>
-      <!-- <div class="buttons">
-        <button class="signupbtn">Sign up</button>
-        <button class="loginbtn">Log in</button>
-      </div> -->
       <h1 class="text-header">Melodius-Playlists</h1>
     </div>
 
@@ -109,7 +62,7 @@
         </div>
       </div>
 
-      <div class="playbar">
+      <div class="playbar" *ngIf="!isMenuOpen || !isMobileView">
         <div class="seekbar" (click)="seek($event)">
           <div
             class="circle"
