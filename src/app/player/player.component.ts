@@ -103,16 +103,6 @@ export class PlayerComponent implements OnInit {
     }
   }
 
-  // loadSong(song: any, index: number) {
-  //   if (this.audio) {
-  //     this.audio.pause(); // Stop any current song
-  //   }
-  //   this.currentSong = song;
-  //   this.currentIndex = index;
-  //   this.audio.src = song.url;
-  //   this.audio.load(); // Just load the song without playing
-  // }
-
   loadSong(song: any, index: number) {
     if (this.audio) {
       this.audio.pause(); // Stop any currently playing song
@@ -178,6 +168,10 @@ export class PlayerComponent implements OnInit {
       this.duration = this.formatTime(this.audio.duration);
       this.updateTime();
     };
+
+    if (this.isMobileView && this.isMenuOpen) {
+      this.closeMenu();
+    }
   }
 
   setVolume(event: any) {
@@ -186,18 +180,6 @@ export class PlayerComponent implements OnInit {
       this.audio.volume = this.volume / 100; // Update song volume if not muted
     }
   }
-
-  // toggleMute(volumeIcon: HTMLImageElement) {
-  //   if (this.isMuted) {
-  //     this.isMuted = false;
-  //     volumeIcon.src = volumeIcon.src.replace('volume.svg', 'mute.svg');
-  //     this.currentSong.volume = this.volume / 100;
-  //   } else {
-  //     this.isMuted = true;
-  //     volumeIcon.src = volumeIcon.src.replace('mute.svg', 'volume.svg');
-  //     this.currentSong.volume = 0;
-  //   }
-  // }
 
   toggleMute() {
     if (this.isMuted) {
@@ -245,14 +227,6 @@ export class PlayerComponent implements OnInit {
     this.loadSong(this.songs[this.currentIndex], this.currentIndex);
     this.playSong(this.songs[this.currentIndex], this.currentIndex);
   }
-
-  // togglePlayPause() {
-  //   if (this.audio.paused) {
-  //     this.audio.play();
-  //   } else {
-  //     this.audio.pause();
-  //   }
-  // }
 
   togglePlayPause() {
     if (this.audio.paused) {
